@@ -21,7 +21,7 @@ services:
       APP_ENV: ${APP_ENV:-production}
       APP_DEBUG: ${APP_DEBUG:-false}
       APP_KEY: ${APP_KEY}
-      APP_URL: ${APP_URL:-http://localhost:8088}
+      APP_URL: ${APP_URL:-https://inventory.3133.ca}
       APP_TIMEZONE: ${APP_TIMEZONE:-America/Vancouver}
       APP_LOCALE: ${APP_LOCALE:-en-US}
       MAX_RESULTS: ${MAX_RESULTS:-500}
@@ -59,7 +59,7 @@ services:
       ENCRYPT: ${ENCRYPT:-false}
       COOKIE_NAME: ${COOKIE_NAME:-3133_inventory_session}
       COOKIE_DOMAIN: ${COOKIE_DOMAIN:-null}
-      SECURE_COOKIES: ${SECURE_COOKIES:-false}
+      SECURE_COOKIES: ${SECURE_COOKIES:-true}
       API_TOKEN_EXPIRATION_YEARS: ${API_TOKEN_EXPIRATION_YEARS:-40}
       APP_TRUSTED_PROXIES: ${APP_TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
       ALLOW_IFRAMING: ${ALLOW_IFRAMING:-false}
@@ -78,7 +78,7 @@ services:
       LOG_MAX_DAYS: ${LOG_MAX_DAYS:-10}
       APP_LOCKED: ${APP_LOCKED:-false}
       APP_CIPHER: AES-256-CBC
-      APP_FORCE_TLS: ${APP_FORCE_TLS:-false}
+      APP_FORCE_TLS: ${APP_FORCE_TLS:-true}
       GOOGLE_MAPS_API: ${GOOGLE_MAPS_API:-}
       LDAP_MEM_LIM: ${LDAP_MEM_LIM:-500M}
       LDAP_TIME_LIM: ${LDAP_TIME_LIM:-600}

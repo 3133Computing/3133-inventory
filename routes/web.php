@@ -18,6 +18,7 @@ use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Inventory\ConsumableLabelController;
 use App\Http\Controllers\Inventory\ConsumableStockController;
+use App\Http\Controllers\Inventory\RapidIntakeController;
 use App\Http\Controllers\Inventory\ScanController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\MaintenanceTypesController;
@@ -756,6 +757,14 @@ Route::withoutMiddleware(['web'])->get(
 )->name('health');
 
 Route::middleware(['auth'])->prefix('inventory')->group(function () {
+    Route::get('intake', [RapidIntakeController::class, 'index'])
+        ->name('inventory.intake')
+        ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')
+            ->push(trans('general.rapid_intake'), route('inventory.intake')));
+
+    Route::post('intake', [RapidIntakeController::class, 'store'])
+        ->name('inventory.intake.store');
+
     Route::get('scan', [ScanController::class, 'index'])
         ->name('inventory.scan')
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')
