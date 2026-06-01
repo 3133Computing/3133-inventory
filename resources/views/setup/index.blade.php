@@ -53,7 +53,7 @@ Create a User ::
         @if ($start_settings['url_valid'])
           That URL looks right! Good job!
         @else
-          Uh oh! Snipe-IT thinks your URL is {{ $start_settings['url_config'] }}, but your real URL is {{ $start_settings['real_url'] }}
+          Uh oh! 3133 Inventory thinks your URL is {{ $start_settings['url_config'] }}, but your real URL is {{ $start_settings['real_url'] }}
           Please update your <code>APP_URL</code> settings in your  <code>.env</code> file
         @endif
       </td>
