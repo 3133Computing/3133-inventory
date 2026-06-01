@@ -11,6 +11,7 @@ use App\Models\Consumable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,6 +40,31 @@ class ConsumablesController extends Controller
         $this->authorize('index', Consumable::class);
 
         return view('consumables/index');
+    }
+
+    /**
+     * Search sellable stock by item number/barcode and redirect to the match.
+     */
+    public function getConsumableByItemNo(Request $request, ?string $tag = null): RedirectResponse
+    {
+        $this->authorize('index', Consumable::class);
+
+        $tag = trim((string) ($tag ?: $request->input('assetTag')));
+        $topsearch = ($request->input('topsearch') == 'true');
+
+        $consumables = Consumable::where('item_no', '=', $tag);
+
+        if ($tag === '' || $consumables->count() !== 1) {
+            return redirect()->route('consumables.index')
+                ->with('search', $tag)
+                ->with('topsearch', $topsearch)
+                ->with('warning', trans('general.sellable_stock_barcode_not_found', ['barcode' => $tag]));
+        }
+
+        $consumable = $consumables->first();
+        $this->authorize('view', $consumable);
+
+        return redirect()->route('consumables.show', $consumable->id)->with('topsearch', $topsearch);
     }
 
     /**

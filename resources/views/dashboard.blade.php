@@ -27,20 +27,30 @@
 @endif
 
 <div class="row">
+    <div class="col-md-12">
+        <div class="callout callout-info">
+            <h4>{{ trans('general.dashboard_sellable_stock_focus') }}</h4>
+            <p>{{ trans('general.dashboard_sellable_stock_focus_help') }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
 
     @can('index', \App\Models\Consumable::class)
-    <div class="col-lg-3 col-xs-6">
-        <a href="{{ route('inventory.scan') }}">
+    <div class="col-lg-6 col-xs-12">
+        <a href="{{ route('inventory.intake') }}">
             <div class="dashboard small-box bg-green">
                 <div class="inner">
                     <h3><x-icon type="barcode" /></h3>
-                    <p>{{ trans('general.inventory_scan') }}</p>
+                    <p>{{ trans('general.rapid_intake') }}</p>
+                    <p class="hidden-xs">{{ trans('general.rapid_intake_help') }}</p>
                 </div>
                 <div class="icon" aria-hidden="true">
                     <x-icon type="barcode" />
                 </div>
                 <span class="small-box-footer">
-                    {{ trans('general.search') }}
+                    {{ trans('general.rapid_intake_fast_flow') }}
                     <x-icon type="arrow-circle-right" />
                 </span>
             </div>
@@ -49,7 +59,7 @@
     @endcan
 
     @can('index', \App\Models\Consumable::class)
-    <div class="col-lg-3 col-xs-6">
+    <div class="col-lg-6 col-xs-12">
         <a href="{{ route('consumables.index') }}">
             <div class="dashboard small-box bg-purple">
                 <div class="inner">
@@ -152,7 +162,7 @@
                         </div>
                         <div class="col-md-3">
                             @can('index', \App\Models\Consumable::class)
-                            <a class="btn bg-green" style="width: 100%" href="{{ route('inventory.scan') }}">{{ trans('general.inventory_scan') }}</a>
+                            <a class="btn bg-green" style="width: 100%" href="{{ route('inventory.intake') }}">{{ trans('general.rapid_intake') }}</a>
                             @endcan
                         </div>
                     </div>
