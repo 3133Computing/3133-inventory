@@ -1,0 +1,100 @@
+volumes:
+  db_data:
+  storage:
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: 3133-inventory:latest
+    restart: unless-stopped
+    volumes:
+      - storage:/var/lib/snipeit
+    ports:
+      - "${APP_PORT:-8088}:80"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost:8088}
+      APP_TIMEZONE: ${APP_TIMEZONE:-America/Vancouver}
+      APP_LOCALE: ${APP_LOCALE:-en-US}
+      MAX_RESULTS: ${MAX_RESULTS:-500}
+      PRIVATE_FILESYSTEM_DISK: ${PRIVATE_FILESYSTEM_DISK:-local}
+      PUBLIC_FILESYSTEM_DISK: ${PUBLIC_FILESYSTEM_DISK:-local_public}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_SOCKET: "null"
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-3133_inventory}
+      DB_USERNAME: ${DB_USERNAME:-3133_inventory}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PREFIX: "null"
+      DB_DUMP_PATH: /usr/bin
+      DB_DUMP_SKIP_SSL: "true"
+      DB_CHARSET: utf8mb4
+      DB_COLLATION: utf8mb4_unicode_ci
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST:-mailhog}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-null}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-null}
+      MAIL_TLS_VERIFY_PEER: ${MAIL_TLS_VERIFY_PEER:-true}
+      MAIL_FROM_ADDR: ${MAIL_FROM_ADDR:-inventory@3133.ca}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-3133 Inventory}
+      MAIL_REPLYTO_ADDR: ${MAIL_REPLYTO_ADDR:-inventory@3133.ca}
+      MAIL_REPLYTO_NAME: ${MAIL_REPLYTO_NAME:-3133 Inventory}
+      MAIL_AUTO_EMBED_METHOD: attachment
+      ALLOW_BACKUP_DELETE: ${ALLOW_BACKUP_DELETE:-false}
+      ALLOW_DATA_PURGE: ${ALLOW_DATA_PURGE:-false}
+      IMAGE_LIB: ${IMAGE_LIB:-gd}
+      BACKUP_ENV: ${BACKUP_ENV:-true}
+      SESSION_LIFETIME: ${SESSION_LIFETIME:-12000}
+      EXPIRE_ON_CLOSE: ${EXPIRE_ON_CLOSE:-false}
+      ENCRYPT: ${ENCRYPT:-false}
+      COOKIE_NAME: ${COOKIE_NAME:-3133_inventory_session}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-null}
+      SECURE_COOKIES: ${SECURE_COOKIES:-false}
+      API_TOKEN_EXPIRATION_YEARS: ${API_TOKEN_EXPIRATION_YEARS:-40}
+      APP_TRUSTED_PROXIES: ${APP_TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      ALLOW_IFRAMING: ${ALLOW_IFRAMING:-false}
+      REFERRER_POLICY: ${REFERRER_POLICY:-same-origin}
+      ENABLE_CSP: ${ENABLE_CSP:-false}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-null}
+      ENABLE_HSTS: ${ENABLE_HSTS:-false}
+      CACHE_DRIVER: ${CACHE_DRIVER:-file}
+      SESSION_DRIVER: ${SESSION_DRIVER:-file}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-sync}
+      CACHE_PREFIX: ${CACHE_PREFIX:-3133_inventory}
+      REDIS_HOST: ${REDIS_HOST:-null}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-null}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stderr}
+      LOG_MAX_DAYS: ${LOG_MAX_DAYS:-10}
+      APP_LOCKED: ${APP_LOCKED:-false}
+      APP_CIPHER: AES-256-CBC
+      APP_FORCE_TLS: ${APP_FORCE_TLS:-false}
+      GOOGLE_MAPS_API: ${GOOGLE_MAPS_API:-}
+      LDAP_MEM_LIM: ${LDAP_MEM_LIM:-500M}
+      LDAP_TIME_LIM: ${LDAP_TIME_LIM:-600}
+
+  db:
+    image: mariadb:11.4.7
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-3133_inventory}
+      MYSQL_USER: ${DB_USERNAME:-3133_inventory}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 1s
+      retries: 20
