@@ -19,11 +19,32 @@ use Illuminate\Validation\ValidationException;
 
 class RapidIntakeController extends Controller
 {
+    private const STORAGE_AREAS = [
+        'office bins',
+        'tool bag',
+        'tool chest',
+        'office drawers',
+        'garage',
+        'other',
+    ];
+
     public function index(): View
     {
         $this->authorize('index', Consumable::class);
 
-        return view('inventory.intake');
+        $locations = $this->storageLocations();
+        $recentReceived = Actionlog::query()
+            ->with(['item', 'location'])
+            ->where('action_type', ActionType::StockReceived->value)
+            ->where('item_type', Consumable::class)
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('inventory.intake', [
+            'locations' => $locations,
+            'recentReceived' => $recentReceived,
+        ]);
     }
 
     public function lookup(Request $request, BarcodeLookupService $barcodeLookup): JsonResponse
@@ -127,6 +148,57 @@ class RapidIntakeController extends Controller
             ]));
     }
 
+    public function move(Request $request, Consumable $consumable): RedirectResponse
+    {
+        $this->authorize('update', $consumable);
+
+        $validated = $request->validate([
+            'storage_location' => ['required', 'string', 'max:255'],
+        ]);
+
+        $storageLocation = trim($validated['storage_location']);
+
+        if ($storageLocation === '') {
+            throw ValidationException::withMessages([
+                'storage_location' => trans('validation.required', ['attribute' => trans('general.storage_location')]),
+            ]);
+        }
+
+        $location = $this->findOrCreateLocation($storageLocation);
+        $consumable->location_id = $location->id;
+
+        if (! $consumable->save()) {
+            throw ValidationException::withMessages($consumable->getErrors()->toArray());
+        }
+
+        $this->logStockMove($consumable->fresh(), trans('general.move_stock_log_note', [
+            'location' => $location->name,
+        ]), $location);
+
+        return redirect()
+            ->route('inventory.intake')
+            ->with('success', trans('general.move_stock_success', [
+                'item' => $consumable->name,
+                'location' => $location->name,
+            ]));
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, Location>
+     */
+    private function storageLocations()
+    {
+        foreach (self::STORAGE_AREAS as $name) {
+            $this->findOrCreateLocation($name);
+        }
+
+        return Location::query()
+            ->orderByRaw('case when name in (?, ?, ?, ?, ?, ?) then 0 else 1 end', self::STORAGE_AREAS)
+            ->orderBy('name')
+            ->limit(75)
+            ->get();
+    }
+
     private function findOrCreateLocation(string $name): Location
     {
         $location = Location::query()->where('name', $name)->first();
@@ -180,5 +252,18 @@ class RapidIntakeController extends Controller
         $log->action_date = now();
         $log->company_id = $consumable->company_id;
         $log->logaction(ActionType::StockReceived);
+    }
+
+    private function logStockMove(Consumable $consumable, string $note, Location $location): void
+    {
+        $log = new Actionlog;
+        $log->item_type = Consumable::class;
+        $log->item_id = $consumable->id;
+        $log->note = $note;
+        $log->created_by = auth()->id();
+        $log->action_date = now();
+        $log->location_id = $location->id;
+        $log->company_id = $consumable->company_id;
+        $log->logaction(ActionType::Update);
     }
 }

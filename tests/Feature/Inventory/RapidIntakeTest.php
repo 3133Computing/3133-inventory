@@ -104,4 +104,71 @@ class RapidIntakeTest extends TestCase
             'qty' => 1,
         ]);
     }
+
+    public function test_rapid_intake_page_shows_required_storage_area_selector_and_last_received_panel(): void
+    {
+        $consumable = Consumable::factory()->create([
+            'item_no' => 'LAST-10-BARCODE',
+            'name' => 'Recently Received Switch',
+            'qty' => 4,
+        ]);
+        $actor = User::factory()->superuser()->create();
+        $location = Location::factory()->create(['name' => 'office']);
+
+        Actionlog::factory()->create([
+            'action_type' => 'stock received',
+            'item_type' => Consumable::class,
+            'item_id' => $consumable->id,
+            'quantity' => 4,
+            'created_by' => $actor->id,
+            'note' => 'Rapid intake to office',
+            'location_id' => $location->id,
+        ]);
+
+        $this->actingAs($actor)
+            ->get(route('inventory.intake'))
+            ->assertOk()
+            ->assertSee('autofocus', false)
+            ->assertSee('Last 10 received items')
+            ->assertSee('Recently Received Switch')
+            ->assertSee('office bins')
+            ->assertSee('tool bag')
+            ->assertSee('tool chest')
+            ->assertSee('office drawers')
+            ->assertSee('garage')
+            ->assertSee('other')
+            ->assertDontSee('customer loaner pool')
+            ->assertSee('name="storage_location"', false)
+            ->assertSee('required', false);
+    }
+
+    public function test_quick_move_stock_changes_existing_consumable_location_without_changing_quantity(): void
+    {
+        $from = Location::factory()->create(['name' => 'office']);
+        $to = Location::factory()->create(['name' => 'van']);
+        $consumable = Consumable::factory()->create([
+            'item_no' => 'MOVE-ME',
+            'name' => 'Patch Cable',
+            'qty' => 12,
+            'location_id' => $from->id,
+        ]);
+        $actor = User::factory()->superuser()->create();
+
+        $this->actingAs($actor)
+            ->post(route('inventory.intake.move', $consumable), [
+                'storage_location' => $to->name,
+            ])
+            ->assertRedirect(route('inventory.intake'));
+
+        $consumable->refresh();
+        $this->assertEquals(12, $consumable->qty);
+        $this->assertEquals($to->id, $consumable->location_id);
+        $this->assertDatabaseHas('action_logs', [
+            'action_type' => 'update',
+            'item_id' => $consumable->id,
+            'item_type' => Consumable::class,
+            'created_by' => $actor->id,
+            'note' => 'Moved stock to van',
+        ]);
+    }
 }

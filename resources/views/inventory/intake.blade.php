@@ -68,21 +68,18 @@
                     <div class="form-group {{ $errors->has('storage_location') ? ' has-error' : '' }}">
                         <label for="storage_location" class="col-md-3 control-label">{{ trans('general.storage_location') }}</label>
                         <div class="col-md-9">
-                            <input
-                                type="text"
+                            <select
                                 name="storage_location"
                                 id="storage_location"
-                                value="{{ old('storage_location') }}"
                                 class="form-control input-lg"
-                                autocomplete="off"
-                                list="rapid-intake-locations"
                                 required
                             >
-                            <datalist id="rapid-intake-locations">
-                                @foreach (\App\Models\Location::query()->orderBy('name')->limit(50)->pluck('name') as $locationName)
-                                    <option value="{{ $locationName }}">
+                                <option value="">{{ trans('general.select_location') }}</option>
+                                @foreach ($locations as $location)
+                                    <option value="{{ $location->name }}" {{ old('storage_location') === $location->name ? 'selected' : '' }}>{{ $location->name }}</option>
                                 @endforeach
-                            </datalist>
+                            </select>
+                            <p class="help-block">{{ trans('general.rapid_intake_location_help') }}</p>
                             {!! $errors->first('storage_location', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                         </div>
                     </div>
@@ -128,6 +125,57 @@
                 <p class="text-muted">{{ trans('general.rapid_intake_existing_new_help') }}</p>
             </div>
         </div>
+
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ trans('general.last_10_received_items') }}</h3>
+            </div>
+            <div class="box-body no-padding">
+                @if ($recentReceived->isEmpty())
+                    <p class="text-muted" style="padding: 15px;">{{ trans('general.no_recent_received_items') }}</p>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('general.item') }}</th>
+                                    <th>{{ trans('general.qty') }}</th>
+                                    <th>{{ trans('general.location') }}</th>
+                                    <th>{{ trans('general.move_stock') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($recentReceived as $received)
+                                    @php($item = $received->item)
+                                    @if ($item)
+                                        <tr>
+                                            <td>
+                                                <strong>{{ $item->name }}</strong><br>
+                                                <span class="text-muted">{{ $item->item_no }}</span>
+                                            </td>
+                                            <td>{{ $received->quantity }}</td>
+                                            <td>{{ optional($item->location)->name ?: optional($received->location)->name }}</td>
+                                            <td>
+                                                <form method="post" action="{{ route('inventory.intake.move', $item) }}" class="form-inline rapid-move-form">
+                                                    @csrf
+                                                    <select name="storage_location" class="form-control input-sm" required>
+                                                        <option value="">{{ trans('general.select_location') }}</option>
+                                                        @foreach ($locations as $location)
+                                                            <option value="{{ $location->name }}" {{ optional($item->location)->name === $location->name ? 'selected' : '' }}>{{ $location->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <button type="submit" class="btn btn-xs btn-primary">{{ trans('general.move_stock') }}</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 </div>
 @stop
@@ -167,9 +215,13 @@
                             $('#name').val(response.title);
                         }
 
-                        setLookupStatus('{{ trans('general.barcode_lookup_found') }}'.replace(':source', response.source || '{{ trans('general.barcode_lookup_free_source') }}'), 'text-success');
+                        if (response.existing) {
+                            setLookupStatus('{{ trans('general.barcode_lookup_duplicate_existing') }}'.replace(':item', response.title), 'text-warning');
+                        } else {
+                            setLookupStatus('{{ trans('general.barcode_lookup_found') }}'.replace(':source', response.source || '{{ trans('general.barcode_lookup_free_source') }}'), 'text-success');
+                        }
                     } else {
-                        setLookupStatus('{{ trans('general.barcode_lookup_not_found') }}', 'text-warning');
+                        setLookupStatus('{{ trans('general.barcode_lookup_not_found_create_basic') }}', 'text-warning');
                     }
                 })
                 .fail(function (_xhr, status) {
@@ -196,6 +248,20 @@
             if (event.key === 'Enter') {
                 event.preventDefault();
                 lookupBarcode(true);
+            }
+        });
+
+        $('#quantity').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                $('#storage_location').focus();
+            }
+        });
+
+        $('#storage_location').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                $('#rapid-intake-form').trigger('submit');
             }
         });
     });

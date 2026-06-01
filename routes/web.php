@@ -768,6 +768,9 @@ Route::middleware(['auth'])->prefix('inventory')->group(function () {
     Route::post('intake', [RapidIntakeController::class, 'store'])
         ->name('inventory.intake.store');
 
+    Route::post('intake/consumables/{consumable}/move', [RapidIntakeController::class, 'move'])
+        ->name('inventory.intake.move');
+
     Route::get('scan', [ScanController::class, 'index'])
         ->name('inventory.scan')
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')
