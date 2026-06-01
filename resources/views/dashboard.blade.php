@@ -284,21 +284,9 @@
                                         <x-icon type="assets" />
 										<span class="sr-only">{{ trans('general.asset_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
-                                        <x-icon type="accessories" />
-										<span class="sr-only">{{ trans('general.accessories_count') }}</span>
-									</th>
 									<th class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
                                         <x-icon type="consumables" />
 										<span class="sr-only">{{ trans('general.consumables_count') }}</span>
-									</th>
-									<th class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
-                                        <x-icon type="components" />
-										<span class="sr-only">{{ trans('general.components_count') }}</span>
-									</th>
-									<th class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
-                                        <x-icon type="licenses" />
-										<span class="sr-only">{{ trans('general.licenses_count') }}</span>
 									</th>
 								</tr>
 								</thead>
@@ -416,21 +404,9 @@
                                     <x-icon type="assets" />
                                     <span class="sr-only">{{ trans('general.asset_count') }}</span>
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
-                                    <x-icon type="licenses" />
-                                    <span class="sr-only">{{ trans('general.accessories_count') }}</span>
-                                </th>
                                 <th class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
                                     <x-icon type="consumables" />
                                     <span class="sr-only">{{ trans('general.consumables_count') }}</span>
-                                </th>
-                                <th class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
-                                    <x-icon type="components" />
-                                    <span class="sr-only">{{ trans('general.components_count') }}</span>
-                                </th>
-                                <th class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
-                                    <x-icon type="licenses" />
-                                    <span class="sr-only">{{ trans('general.licenses_count') }}</span>
                                 </th>
                             </tr>
                             </thead>

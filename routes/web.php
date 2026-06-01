@@ -16,6 +16,7 @@ use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DepreciationsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\Inventory\ConsumableLabelController;
 use App\Http\Controllers\Inventory\ConsumableStockController;
 use App\Http\Controllers\Inventory\ScanController;
 use App\Http\Controllers\LabelsController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\UploadedFilesController;
 use App\Http\Controllers\ViewAssetsController;
 use App\Livewire\Importer;
 use App\Mail\CheckoutComponentMail;
+use App\Models\Consumable;
 use App\Models\ReportTemplate;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -761,6 +763,11 @@ Route::middleware(['auth'])->prefix('inventory')->group(function () {
 
     Route::post('scan/lookup', [ScanController::class, 'lookup'])
         ->name('inventory.scan.lookup');
+
+    Route::get('consumables/{consumable}/label', [ConsumableLabelController::class, 'show'])
+        ->name('inventory.consumables.label')
+        ->breadcrumbs(fn (Trail $trail, Consumable $consumable) => $trail->parent('consumables.show', $consumable)
+            ->push(trans('general.consumable_qr_label'), route('inventory.consumables.label', $consumable)));
 
     Route::post('consumables/{consumable}/receive', [ConsumableStockController::class, 'receive'])
         ->name('inventory.consumables.receive');

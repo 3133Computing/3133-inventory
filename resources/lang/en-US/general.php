@@ -182,6 +182,8 @@ return [
     'inventory_barcode_not_found' => 'No inventory item found for that barcode.',
     'inventory_scan' => 'Inventory Scan',
     'inventory_scan_help' => 'Scan an existing product barcode for sellable stock, or a 3133 asset tag / QR label for loaner equipment.',
+    'consumable_qr_label' => 'Consumable QR Label',
+    'print_label' => 'Print Label',
     'sellable_stock' => 'Sellable Stock',
     'loaners_assets' => 'Loaners / Assets',
     'customers_users' => 'Customers / Users',

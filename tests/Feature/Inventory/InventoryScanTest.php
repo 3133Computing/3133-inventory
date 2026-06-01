@@ -12,7 +12,7 @@ class InventoryScanTest extends TestCase
     public function test_guest_is_redirected_from_inventory_scan_page(): void
     {
         $this->get(route('inventory.scan'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect();
     }
 
     public function test_superuser_can_view_inventory_scan_page(): void

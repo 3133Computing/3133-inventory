@@ -74,6 +74,7 @@
                         html += '<p><strong>{{ trans('general.qty') }}:</strong> ' + item.quantity + ' &nbsp; <strong>{{ trans('general.remaining') }}:</strong> ' + item.remaining + '</p>';
                         html += '<p>';
                         html += '<a class="btn btn-default" href="' + item.url + '">{{ trans('general.view') }}</a> ';
+                        html += '<a class="btn btn-default" href="' + item.label_url + '" target="_blank">{{ trans('general.print_label') }}</a> ';
                         html += '<form method="post" action="' + item.receive_url + '" style="display:inline-block; margin-left:5px;">@csrf <input type="hidden" name="quantity" value="1"><button class="btn btn-success" type="submit">{{ trans('general.receive_stock') }} +1</button></form> ';
                         html += '<form method="post" action="' + item.remove_url + '" style="display:inline-block; margin-left:5px;">@csrf <input type="hidden" name="quantity" value="1"><button class="btn btn-warning" type="submit">{{ trans('general.remove_stock') }} -1</button></form>';
                         html += '</p>';

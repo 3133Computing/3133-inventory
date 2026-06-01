@@ -1234,45 +1234,20 @@
 
                             @can('index', \App\Models\Asset::class)
                                 <li aria-hidden="true"{!! (request()->is('hardware*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ url('hardware') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=1" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.assets') }}">
+                                    <a href="{{ url('hardware') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=1" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.loaners_assets') }}">
                                         <x-icon type="assets" class="fa-fw" />
-                                        <span class="sr-only">{{ trans('general.assets') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('view', \App\Models\License::class)
-                                <li aria-hidden="true"{!! (request()->is('licenses*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('licenses.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=2" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.licenses') }}">
-                                        <x-icon type="licenses" class="fa-fw" />
-                                        <span class="sr-only">{{ trans('general.licenses') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('index', \App\Models\Accessory::class)
-                                <li aria-hidden="true"{!! (request()->is('accessories*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('accessories.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=3" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.accessories') }}">
-                                        <x-icon type="accessories" class="fa-fw" />
-                                        <span class="sr-only">{{ trans('general.accessories') }}</span>
+                                        <span class="sr-only">{{ trans('general.loaners_assets') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('index', \App\Models\Consumable::class)
                                 <li aria-hidden="true"{!! (request()->is('consumables*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ url('consumables') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=4" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.consumables') }}">
+                                    <a href="{{ url('consumables') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=4" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.sellable_stock') }}">
                                         <x-icon type="consumables" class="fa-fw" />
-                                        <span class="sr-only">{{ trans('general.consumables') }}</span>
+                                        <span class="sr-only">{{ trans('general.sellable_stock') }}</span>
                                     </a>
                                 </li>
                             @endcan
-                            @can('view', \App\Models\Component::class)
-                                <li aria-hidden="true"{!! (request()->is('components*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('components.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=5" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.components') }}">
-                                        <x-icon type="components" class="fa-fw" />
-                                        <span class="sr-only">{{ trans('general.components') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-
                             @can('index', \App\Models\User::class)
                                 <li aria-hidden="true"{!! (request()->is('users*') ? ' class="active"' : '') !!}>
                                     <a href="{{ route('users.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.users') }}">
@@ -1317,35 +1292,11 @@
                                                 </a>
                                             </li>
                                         @endcan
-                                        @can('create', \App\Models\License::class)
-                                            <li{!! (request()->is('licenses/create') ? ' class="active"' : '') !!}>
-                                                <a href="{{ route('licenses.create') }}" tabindex="-1">
-                                                    <x-icon type="licenses" class="fa-fw" />
-                                                    {{ trans('general.license') }}
-                                                </a>
-                                            </li>
-                                        @endcan
-                                        @can('create', \App\Models\Accessory::class)
-                                            <li {!! (request()->is('accessories/create') ? 'class="active"' : '') !!}>
-                                                <a href="{{ route('accessories.create') }}" tabindex="-1">
-                                                    <x-icon type="accessories" class="fa-fw" />
-                                                    {{ trans('general.accessory') }}
-                                                </a>
-                                            </li>
-                                        @endcan
                                         @can('create', \App\Models\Consumable::class)
                                             <li {!! (request()->is('consunmables/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('consumables.create') }}" tabindex="-1">
                                                     <x-icon type="consumables" class="fa-fw" />
                                                     {{ trans('general.consumable') }}
-                                                </a>
-                                            </li>
-                                        @endcan
-                                        @can('create', \App\Models\Component::class)
-                                            <li {!! (request()->is('components/create') ? 'class="active"' : '') !!}>
-                                                <a href="{{ route('components.create') }}" tabindex="-1">
-                                                    <x-icon type="components" class="fa-fw" />
-                                                    {{ trans('general.component') }}
                                                 </a>
                                             </li>
                                         @endcan
@@ -1511,7 +1462,7 @@
                             <li class="treeview{{ ((request()->is('statuslabels/*') || request()->is(['hardware*', 'maintenances*'])) ? ' active' : '') }}">
                                 <a href="#">
                                     <x-icon type="assets" class="fa-fw" />
-                                    <span>{{ trans('general.assets') }}</span>
+                                    <span>{{ trans('general.loaners_assets') }}</span>
                                     <x-icon type="angle-left" class="pull-right fa-fw"/>
                                 </a>
                                 <ul class="treeview-menu">
@@ -1662,47 +1613,14 @@
                                 </ul>
                             </li>
                         @endcan
-                        @can('view', \App\Models\License::class)
-                            <li{!! (request()->is('licenses*') ? ' class="active"' : '') !!}>
-                                <a href="{{ route('licenses.index') }}">
-                                    <x-icon type="licenses" class="fa-fw"/>
-                                    <span>{{ trans('general.licenses') }}</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('index', \App\Models\Accessory::class)
-                            <li id="accessories-sidenav-option"{!! (request()->is('accessories*') ? ' class="active"' : '') !!}>
-                                <a href="{{ route('accessories.index') }}">
-                                    <x-icon type="accessories" class="fa-fw" />
-                                    <span>{{ trans('general.accessories') }}</span>
-                                </a>
-                            </li>
-                        @endcan
                         @can('view', \App\Models\Consumable::class)
                             <li id="consumables-sidenav-option"{!! (request()->is('consumables*') ? ' class="active"' : '') !!}>
                                 <a href="{{ url('consumables') }}">
                                     <x-icon type="consumables" class="fa-fw" />
-                                    <span>{{ trans('general.consumables') }}</span>
+                                    <span>{{ trans('general.sellable_stock') }}</span>
                                 </a>
                             </li>
                         @endcan
-                        @can('view', \App\Models\Component::class)
-                            <li id="components-sidenav-option"{!! (request()->is('components*') ? ' class="active"' : '') !!}>
-                                <a href="{{ route('components.index') }}">
-                                    <x-icon type="components" class="fa-fw" />
-                                    <span>{{ trans('general.components') }}</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('view', \App\Models\PredefinedKit::class)
-                            <li id="kits-sidenav-option"{!! (request()->is('kits') ? ' class="active"' : '') !!}>
-                                <a href="{{ route('kits.index') }}">
-                                    <x-icon type="kits" class="fa-fw" />
-                                    <span>{{ trans('general.kits') }}</span>
-                                </a>
-                            </li>
-                        @endcan
-
                         @can('view', \App\Models\User::class)
                                 <li class="treeview{{ (request()->is('users*') ? ' active' : '') }}" id="users-sidenav-option">
                                     <a href="#" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}}>
@@ -1886,11 +1804,6 @@
                                             {{ trans('general.depreciation_report') }}
                                         </a>
                                     </li>
-                                    <li {{!! (request()->is('reports/licenses') ? ' class="active"' : '') !!}}>
-                                        <a href="{{ url('reports/licenses') }}">
-                                            {{ trans('general.license_report') }}
-                                        </a>
-                                    </li>
                                     <li {{!! (request()->is('ui.reports.maintenances') ? ' class="active"' : '') !!}}>
                                         <a href="{{ route('ui.reports.maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
@@ -1899,11 +1812,6 @@
                                     <li {{!! (request()->is('reports/unaccepted_assets') ? ' class="active"' : '') !!}}>
                                         <a href="{{ url('reports/unaccepted_assets') }}">
                                             {{ trans('general.unaccepted_asset_report') }}
-                                        </a>
-                                    </li>
-                                    <li  {{!! (request()->is('reports/accessories') ? ' class="active"' : '') !!}}>
-                                        <a href="{{ url('reports/accessories') }}">
-                                            {{ trans('general.accessory_report') }}
                                         </a>
                                     </li>
                                 </ul>

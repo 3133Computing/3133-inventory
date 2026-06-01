@@ -48,6 +48,7 @@ class ScanController extends Controller
                 'quantity' => $consumable->qty,
                 'remaining' => $consumable->numRemaining(),
                 'url' => route('consumables.show', $consumable),
+                'label_url' => route('inventory.consumables.label', $consumable),
                 'receive_url' => route('inventory.consumables.receive', $consumable),
                 'remove_url' => route('inventory.consumables.remove', $consumable),
             ]);

@@ -53,4 +53,22 @@ class DashboardTest extends TestCase
                 return true;
             });
     }
+
+    public function test_dashboard_focuses_on_3133_inventory_mvp_workflows()
+    {
+        $this->actingAs(User::factory()->admin()->create())
+            ->get(route('home'))
+            ->assertOk()
+            ->assertSee(trans('general.inventory_scan'))
+            ->assertSee(trans('general.sellable_stock'))
+            ->assertSee(trans('general.loaners_assets'))
+            ->assertSee(trans('general.customers_users'))
+            ->assertDontSee('<span>'.trans('general.licenses').'</span>', false)
+            ->assertDontSee('<span>'.trans('general.accessories').'</span>', false)
+            ->assertDontSee('<span>'.trans('general.components').'</span>', false)
+            ->assertDontSee('<span>'.trans('general.kits').'</span>', false)
+            ->assertDontSee('data-title="'.trans('general.licenses').'"', false)
+            ->assertDontSee('data-title="'.trans('general.accessories').'"', false)
+            ->assertDontSee('data-title="'.trans('general.components').'"', false);
+    }
 }
