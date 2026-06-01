@@ -6,7 +6,7 @@
     <title>
         @section('title')
         @show
-        :: {{ $snipeSettings->site_name }}
+        :: {{ $snipeSettings->site_name ?? config('app.name', '3133 Inventory') }}
     </title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -1496,6 +1496,14 @@
                                 <a href="{{ route('home') }}">
                                     <x-icon type="dashboard" class="fa-fw" />
                                     <span>{{ trans('general.dashboard') }}</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('index', \App\Models\Consumable::class)
+                            <li {!! (request()->routeIs('inventory.scan') ? ' class="active"' : '') !!}>
+                                <a href="{{ route('inventory.scan') }}">
+                                    <x-icon type="barcode" class="fa-fw" />
+                                    <span>{{ trans('general.inventory_scan') }}</span>
                                 </a>
                             </li>
                         @endcan

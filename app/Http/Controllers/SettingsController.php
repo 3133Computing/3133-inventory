@@ -202,7 +202,7 @@ class SettingsController extends Controller
             $setting->link_dark_color = $request->input('link_dark_color', '#5fa4cc');
             $setting->nav_link_color = $request->input('nav_link_color', '#FFFFFF');
 
-            $setting->site_name = $request->input('site_name', 'Snipe-IT');
+            $setting->site_name = $request->input('site_name', '3133 Inventory');
             $setting->custom_css = $request->input('custom_css');
 
             // Logo upload

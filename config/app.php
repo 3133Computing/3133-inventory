@@ -95,7 +95,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('SITE_NAME', 'Snipe-IT'),
+    'name' => env('SITE_NAME', '3133 Inventory'),
 
     /*
     |--------------------------------------------------------------------------

@@ -82,6 +82,7 @@ class IconHelper
                 return 'fas fa-exclamation-triangle';
             case 'kits':
                 return 'fas fa-object-group';
+            case 'barcode':
             case 'assets':
             case 'asset':
                 return 'fas fa-barcode';

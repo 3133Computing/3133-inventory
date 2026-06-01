@@ -6,7 +6,7 @@ return [
     'author' => '',
     'subject' => '',
     'keywords' => '',
-    'creator' => 'Snipe-IT',
+    'creator' => '3133 Inventory',
     'display_mode' => 'fullpage',
     'tempDir' => base_path('../temp/'),
     'pdf_a' => false,

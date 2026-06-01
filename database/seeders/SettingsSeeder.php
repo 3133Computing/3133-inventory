@@ -14,7 +14,7 @@ class SettingsSeeder extends Seeder
         Setting::truncate();
         $settings = new Setting;
         $settings->per_page = 20;
-        $settings->site_name = 'Snipe-IT Demo';
+        $settings->site_name = '3133 Inventory';
         $settings->auto_increment_assets = 1;
         $settings->logo = 'snipe-logo.png';
         $settings->alert_email = 'service@snipe-it.io';

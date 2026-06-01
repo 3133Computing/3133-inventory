@@ -28,72 +28,33 @@
 
 <div class="row">
 
-    <!-- panel -->
-    <div class="col-lg-2 col-xs-6">
-        <a href="{{ route('hardware.index') }}">
-            <!-- small hardware box -->
-            <div class="dashboard small-box bg-teal">
+    @can('index', \App\Models\Consumable::class)
+    <div class="col-lg-3 col-xs-6">
+        <a href="{{ route('inventory.scan') }}">
+            <div class="dashboard small-box bg-green">
                 <div class="inner">
-                    <h3>{{ number_format(\App\Models\Asset::AssetsForShow()->count()) }}</h3>
-                    <p>{{ trans('general.assets') }}</p>
+                    <h3><x-icon type="barcode" /></h3>
+                    <p>{{ trans('general.inventory_scan') }}</p>
                 </div>
                 <div class="icon" aria-hidden="true">
-                    <x-icon type="assets" />
+                    <x-icon type="barcode" />
                 </div>
                 <span class="small-box-footer">
-                    {{ trans('general.view_all') }}
+                    {{ trans('general.search') }}
                     <x-icon type="arrow-circle-right" />
                 </span>
             </div>
         </a>
     </div><!-- ./col -->
+    @endcan
 
-    <div class="col-lg-2 col-xs-6">
-        <a href="{{ route('licenses.index') }}" aria-hidden="true">
-            <!-- small license box -->
-            <div class="dashboard small-box bg-maroon">
-                <div class="inner">
-                    <h3>{{ number_format($counts['license']) }}</h3>
-                    <p>{{ trans('general.licenses') }}</p>
-                </div>
-                <div class="icon" aria-hidden="true">
-                    <x-icon type="licenses" />
-                </div>
-                <span class="small-box-footer">
-                    {{ trans('general.view_all') }}
-                    <x-icon type="arrow-circle-right" />
-                </span>
-            </div>
-        </a>
-    </div><!-- ./col -->
-
-
-    <div class="col-lg-2 col-xs-6">
-    <!-- small accessories box -->
-        <a href="{{ route('accessories.index') }}">
-            <div class="dashboard small-box bg-orange">
-                <div class="inner">
-                    <h3> {{ number_format($counts['accessory']) }}</h3>
-                    <p>{{ trans('general.accessories') }}</p>
-                </div>
-                <div class="icon" aria-hidden="true">
-                    <x-icon type="accessories" />
-                </div>
-                <span class="small-box-footer">
-                    {{ trans('general.view_all') }}
-                <x-icon type="arrow-circle-right" />
-                </span>
-            </div>
-        </a>
-    </div><!-- ./col -->
-
-    <div class="col-lg-2 col-xs-6">
-    <!-- small consumables box -->
+    @can('index', \App\Models\Consumable::class)
+    <div class="col-lg-3 col-xs-6">
         <a href="{{ route('consumables.index') }}">
             <div class="dashboard small-box bg-purple">
                 <div class="inner">
                     <h3> {{ number_format($counts['consumable']) }}</h3>
-                    <p>{{ trans('general.consumables') }}</p>
+                    <p>{{ trans('general.sellable_stock') }}</p>
                 </div>
                 <div class="icon" aria-hidden="true">
                     <x-icon type="consumables" />
@@ -105,17 +66,18 @@
             </div>
         </a>
     </div><!-- ./col -->
+    @endcan
 
-    <div class="col-lg-2 col-xs-6">
-        <!-- small components box -->
-        <a href="{{ route('components.index') }}">
-            <div class="dashboard small-box bg-yellow">
+    @can('index', \App\Models\Asset::class)
+    <div class="col-lg-3 col-xs-6">
+        <a href="{{ route('hardware.index') }}">
+            <div class="dashboard small-box bg-teal">
                 <div class="inner">
-                    <h3>{{ number_format($counts['component']) }}</h3>
-                    <p>{{ trans('general.components') }}</p>
+                    <h3>{{ number_format(\App\Models\Asset::AssetsForShow()->count()) }}</h3>
+                    <p>{{ trans('general.loaners_assets') }}</p>
                 </div>
                 <div class="icon" aria-hidden="true">
-                    <x-icon type="components" />
+                    <x-icon type="assets" />
                 </div>
                 <span class="small-box-footer">
                     {{ trans('general.view_all') }}
@@ -124,14 +86,15 @@
             </div>
         </a>
     </div><!-- ./col -->
+    @endcan
 
-    <div class="col-lg-2 col-xs-6">
-        <!-- small users box -->
+    @can('index', \App\Models\User::class)
+    <div class="col-lg-3 col-xs-6">
         <a href="{{ route('users.index') }}">
             <div class="dashboard small-box bg-light-blue">
                 <div class="inner">
                     <h3>{{ number_format($counts['user']) }}</h3>
-                    <p>{{ trans('general.people') }}</p>
+                    <p>{{ trans('general.customers_users') }}</p>
                 </div>
                 <div class="icon" aria-hidden="true">
                     <x-icon type="users" />
@@ -143,6 +106,7 @@
             </div>
         </a>
     </div><!-- ./col -->
+    @endcan
 </div>
 
 @if ($counts['grand_total'] == 0)
@@ -171,34 +135,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             @can('create', \App\Models\Asset::class)
                             <a class="btn bg-teal" style="width: 100%" href="{{ route('hardware.create') }}">{{ trans('general.new_asset') }}</a>
                             @endcan
                         </div>
-                        <div class="col-md-2">
-                            @can('create', \App\Models\License::class)
-                                <a class="btn bg-maroon" style="width: 100%" href="{{ route('licenses.create') }}">{{ trans('general.new_license') }}</a>
-                            @endcan
-                        </div>
-                        <div class="col-md-2">
-                            @can('create', \App\Models\Accessory::class)
-                                <a class="btn bg-orange" style="width: 100%" href="{{ route('accessories.create') }}">{{ trans('general.new_accessory') }}</a>
-                            @endcan
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             @can('create', \App\Models\Consumable::class)
                                 <a class="btn bg-purple" style="width: 100%" href="{{ route('consumables.create') }}">{{ trans('general.new_consumable') }}</a>
                             @endcan
                         </div>
-                        <div class="col-md-2">
-                            @can('create', \App\Models\Component::class)
-                                <a class="btn bg-yellow" style="width: 100%" href="{{ route('components.create') }}">{{ trans('general.new_component') }}</a>
-                            @endcan
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             @can('create', \App\Models\User::class)
                                 <a class="btn bg-light-blue" style="width: 100%" href="{{ route('users.create') }}">{{ trans('general.new_user') }}</a>
+                            @endcan
+                        </div>
+                        <div class="col-md-3">
+                            @can('index', \App\Models\Consumable::class)
+                            <a class="btn bg-green" style="width: 100%" href="{{ route('inventory.scan') }}">{{ trans('general.inventory_scan') }}</a>
                             @endcan
                         </div>
                     </div>

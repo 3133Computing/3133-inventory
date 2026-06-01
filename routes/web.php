@@ -16,6 +16,8 @@ use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DepreciationsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\Inventory\ConsumableStockController;
+use App\Http\Controllers\Inventory\ScanController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\MaintenanceTypesController;
 use App\Http\Controllers\ManufacturersController;
@@ -750,6 +752,22 @@ Route::withoutMiddleware(['web'])->get(
     '/health',
     [HealthController::class, 'get']
 )->name('health');
+
+Route::middleware(['auth'])->prefix('inventory')->group(function () {
+    Route::get('scan', [ScanController::class, 'index'])
+        ->name('inventory.scan')
+        ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')
+            ->push(trans('general.inventory_scan'), route('inventory.scan')));
+
+    Route::post('scan/lookup', [ScanController::class, 'lookup'])
+        ->name('inventory.scan.lookup');
+
+    Route::post('consumables/{consumable}/receive', [ConsumableStockController::class, 'receive'])
+        ->name('inventory.consumables.receive');
+
+    Route::post('consumables/{consumable}/remove', [ConsumableStockController::class, 'remove'])
+        ->name('inventory.consumables.remove');
+});
 
 Route::middleware(['auth'])->get(
     '/',
