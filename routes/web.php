@@ -762,6 +762,9 @@ Route::middleware(['auth'])->prefix('inventory')->group(function () {
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')
             ->push(trans('general.rapid_intake'), route('inventory.intake')));
 
+    Route::get('intake/lookup', [RapidIntakeController::class, 'lookup'])
+        ->name('inventory.intake.lookup');
+
     Route::post('intake', [RapidIntakeController::class, 'store'])
         ->name('inventory.intake.store');
 

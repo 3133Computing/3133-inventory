@@ -9,7 +9,9 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Consumable;
 use App\Models\Location;
+use App\Services\Inventory\BarcodeLookupService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +24,32 @@ class RapidIntakeController extends Controller
         $this->authorize('index', Consumable::class);
 
         return view('inventory.intake');
+    }
+
+    public function lookup(Request $request, BarcodeLookupService $barcodeLookup): JsonResponse
+    {
+        $this->authorize('index', Consumable::class);
+
+        $validated = $request->validate([
+            'barcode' => ['required', 'string', 'max:191'],
+        ]);
+
+        $barcode = trim($validated['barcode']);
+        $consumable = Consumable::query()
+            ->where('item_no', $barcode)
+            ->first();
+
+        if ($consumable) {
+            return response()->json([
+                'found' => true,
+                'title' => $consumable->name,
+                'brand' => null,
+                'source' => '3133 Inventory',
+                'existing' => true,
+            ]);
+        }
+
+        return response()->json($barcodeLookup->lookup($barcode));
     }
 
     public function store(Request $request): RedirectResponse

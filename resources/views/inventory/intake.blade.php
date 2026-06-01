@@ -26,16 +26,24 @@
                     <div class="form-group {{ $errors->has('barcode') ? ' has-error' : '' }}">
                         <label for="barcode" class="col-md-3 control-label">{{ trans('general.barcode') }}</label>
                         <div class="col-md-9">
-                            <input
-                                type="text"
-                                name="barcode"
-                                id="barcode"
-                                value="{{ old('barcode', request('barcode')) }}"
-                                class="form-control input-lg"
-                                autocomplete="off"
-                                autofocus
-                                required
-                            >
+                            <div class="input-group input-group-lg">
+                                <input
+                                    type="text"
+                                    name="barcode"
+                                    id="barcode"
+                                    value="{{ old('barcode', request('barcode')) }}"
+                                    class="form-control"
+                                    autocomplete="off"
+                                    autofocus
+                                    required
+                                >
+                                <span class="input-group-btn">
+                                    <button type="button" id="barcode-lookup-button" class="btn btn-default">
+                                        <x-icon type="search" /> {{ trans('general.barcode_lookup_button') }}
+                                    </button>
+                                </span>
+                            </div>
+                            <p class="help-block" id="barcode-lookup-status" aria-live="polite"></p>
                             {!! $errors->first('barcode', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                         </div>
                     </div>
@@ -128,6 +136,68 @@
 <script nonce="{{ csrf_token() }}">
     $(function () {
         $('#barcode').focus();
+
+        var lookupUrl = '{{ route('inventory.intake.lookup') }}';
+        var lookupRequest;
+
+        function setLookupStatus(message, className) {
+            $('#barcode-lookup-status')
+                .removeClass('text-muted text-success text-warning text-danger')
+                .addClass(className || 'text-muted')
+                .text(message || '');
+        }
+
+        function lookupBarcode(focusAfterLookup) {
+            var barcode = $.trim($('#barcode').val());
+
+            if (! barcode) {
+                setLookupStatus('');
+                return;
+            }
+
+            if (lookupRequest) {
+                lookupRequest.abort();
+            }
+
+            setLookupStatus('{{ trans('general.barcode_lookup_searching') }}', 'text-muted');
+            lookupRequest = $.getJSON(lookupUrl, { barcode: barcode })
+                .done(function (response) {
+                    if (response.found && response.title) {
+                        if (! $.trim($('#name').val())) {
+                            $('#name').val(response.title);
+                        }
+
+                        setLookupStatus('{{ trans('general.barcode_lookup_found') }}'.replace(':source', response.source || '{{ trans('general.barcode_lookup_free_source') }}'), 'text-success');
+                    } else {
+                        setLookupStatus('{{ trans('general.barcode_lookup_not_found') }}', 'text-warning');
+                    }
+                })
+                .fail(function (_xhr, status) {
+                    if (status !== 'abort') {
+                        setLookupStatus('{{ trans('general.barcode_lookup_failed') }}', 'text-danger');
+                    }
+                })
+                .always(function () {
+                    if (focusAfterLookup) {
+                        $('#quantity').focus().select();
+                    }
+                });
+        }
+
+        $('#barcode-lookup-button').on('click', function () {
+            lookupBarcode(false);
+        });
+
+        $('#barcode').on('blur', function () {
+            lookupBarcode(false);
+        });
+
+        $('#barcode').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                lookupBarcode(true);
+            }
+        });
     });
 </script>
 @stop
